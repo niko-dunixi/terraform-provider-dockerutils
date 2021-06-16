@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "*.tfstate": "json",
+        "*.tfstate.backup": "json",
+    }
+}

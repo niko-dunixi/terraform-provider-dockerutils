@@ -1,0 +1,9 @@
+terraform {
+  required_version = ">= 0.14"
+  required_providers {
+    dockerutils = {
+      source = "paulfreaknbaker.com/providers/dockerutils"
+      version = "0.1"
+    }
+  }
+}
