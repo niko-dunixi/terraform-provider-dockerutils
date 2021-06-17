@@ -11,6 +11,21 @@ terraform {
 provider "dockerutils" {
 }
 
+data "dockerutils_helloworld" "world" {
+}
+
+data "dockerutils_helloworld" "phil" {
+  name = "Phil"
+}
+
+output "hello_world_static" {
+  value = "STATIC: Hello, World!"
+}
+
 output "hello_world" {
-  value = "Hello, World!"
+  value = "COMPUTED: ${data.dockerutils_helloworld.world.greeting}"
+}
+
+output "hello_phil" {
+  value = "COMPUTED: ${data.dockerutils_helloworld.phil.greeting}"
 }

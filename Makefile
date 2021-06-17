@@ -11,17 +11,20 @@ GOARCH?=$(shell go env GOARCH)
 
 default: install
 
+.PHONY: build
 build:
 	@[ -n "${GOOS}" ] || (echo "Set GOOS"; exit 1)
 	@[ -n "${GOARCH}" ] || (echo "Set GOARCH"; exit 1)
 	@mkdir -p ./bin
 	go build -o ./bin/${BINARY_PREFIX}_${VERSION}_${GOOS}_${GOARCH}
 
+.PHONY: install
 install:
 	$(MAKE) build
 	mkdir -p ${HOME}/.terraform.d/plugins/${HOSTNAME}/${NAMESPACE}/${NAME}/${VERSION}/${GOOS}_${GOARCH}
 	mv ./bin/${BINARY_PREFIX}_${VERSION}_${GOOS}_${GOARCH} ${HOME}/.terraform.d/plugins/${HOSTNAME}/${NAMESPACE}/${NAME}/${VERSION}/${GOOS}_${GOARCH}
 
+.PHONY: release
 release:
 	hash tfplugindocs || go install github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs
 	tfplugindocs
@@ -38,12 +41,17 @@ release:
 	$(MAKE) build GOOS=windows GOARCH=386
 	$(MAKE) build GOOS=windows GOARCH=amd64
 
+.PHONY: clean
 clean:
 	[ ! -d bin ] || rm -rfv bin
+	rm -rfv test/**/{.terraform,.terraform.lock.hcl}
+
+.PHONY: test-install
+test-install:
+	$(MAKE) install VERSION=0.0.0-testing
 
 .PHONY: test
-test:
-	$(MAKE) install VERSION=0.0.0-testing
+test: test-install clean
 	go test -v ./...
 
 # test: 
