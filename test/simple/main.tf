@@ -3,7 +3,14 @@ terraform {
   required_providers {
     dockerutils = {
       source = "paulfreaknbaker.com/providers/dockerutils"
-      version = "0.1"
+      version = "0.0.0-testing"
     }
   }
+}
+
+provider "dockerutils" {
+}
+
+output "hello_world" {
+  value = "Hello, World!"
 }

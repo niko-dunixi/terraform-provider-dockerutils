@@ -1,9 +1,11 @@
 TEST?=$$(go list ./... | grep -v 'vendor')
 HOSTNAME=paulfreaknbaker.com
+# HOSTNAME=terraform.io
 NAMESPACE=providers
+# NAMESPACE=paulfreaknbaker
 NAME=dockerutils
 BINARY_PREFIX=terraform-provider-${NAME}
-VERSION=0.1
+VERSION=0.0.1
 GOOS?=$(shell go env GOOS)
 GOARCH?=$(shell go env GOARCH)
 
@@ -21,6 +23,8 @@ install:
 	mv ./bin/${BINARY_PREFIX}_${VERSION}_${GOOS}_${GOARCH} ${HOME}/.terraform.d/plugins/${HOSTNAME}/${NAMESPACE}/${NAME}/${VERSION}/${GOOS}_${GOARCH}
 
 release:
+	hash tfplugindocs || go install github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs
+	tfplugindocs
 	$(MAKE) build GOOS=darwin GOARCH=amd64
 	$(MAKE) build GOOS=freebsd GOARCH=386
 	$(MAKE) build GOOS=freebsd GOARCH=amd64
@@ -36,6 +40,11 @@ release:
 
 clean:
 	[ ! -d bin ] || rm -rfv bin
+
+.PHONY: test
+test:
+	$(MAKE) install VERSION=0.0.0-testing
+	go test -v ./...
 
 # test: 
 # 	go test -i $(TEST) || exit 1                                                   
